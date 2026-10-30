@@ -1,0 +1,17 @@
+{
+  "name": "Zhang and Dang 2021, ideal CHEXs",
+  "source": "Zhang & Dang, Cryogenics 116 (2021) 103282; optimum at T_C = 1 K, T_pre3 = 8 K, P_U = 0.36 MPa, d = 20 um",
+  "notes": "T_pre1 and T_pre2 are NOT given in the paper (placeholders). They change the PHEX loads but not q_C, mdot or Q_C when eta = 1.",
+  "fluid": "he3",
+  "T_C": 1.0,
+  "P_U": 0.36,
+  "T_H": 300.0,
+  "T_pre": [80.0, 25.0, 8.0],
+  "eta": [1.0, 1.0, 1.0, 1.0],
+  "d_um": 20.0,
+  "reported": {
+    "q_C_kJ_kg": 8.0,
+    "mdot_mg_s": 2.34,
+    "Q_C_mW": 18.7
+  }
+}

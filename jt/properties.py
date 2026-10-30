@@ -6,7 +6,7 @@ Files (CSV UTF-8, columns exactly as in the request workbook; extra columns igno
   Saturation_He_3.csv  : T [K], P_sat [Pa], h_liquid, h_vapour, s_liquid, s_vapour,
                          rho_liquid, rho_vapour
 
-Implements the FluidTable interface used by jt_cycle_core.py:
+Implements the FluidTable interface used by jt/cycle_core.py:
   h, s, T_from_Ph, Psat, h_sat_vapor, x_v_from_Ph, h_from_Ps, rho_from_Ps
 plus rho(P,T), cp(P,T) (numerical, optional), gamma, R_specific.
 
@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import math
 import os
+import re
 from functools import lru_cache
 from typing import Optional
 
@@ -93,18 +94,46 @@ class DataError(ValueError):
     """The CSV data are malformed or not usable."""
 
 
+def _norm(c: str) -> str:
+    """Normalise a header: 's [J/kg/K]' and 's [J/(kg K)]' compare equal."""
+    return re.sub(r"[\s_()/\[\]]", "", str(c).lower())
+
+
+# Accepted alternative headers (already normalised) for canonical columns.
+_ALIASES = {
+    "P_sat [Pa]": ["ppa"],
+    "h_liquid [J/kg]": ["hliqjkg"],
+    "h_vapour [J/kg]": ["hvapjkg", "hvaporjkg"],
+    "s_liquid [J/(kg K)]": ["sliqjkgk"],
+    "s_vapour [J/(kg K)]": ["svapjkgk", "svaporjkgk"],
+    "rho_liquid [kg/m3]": ["rholiqkgm3"],
+    "rho_vapour [kg/m3]": ["rhovapkgm3", "rhovaporkgm3"],
+}
+
+
 def _read(path: str, cols):
     df = pd.read_csv(path, encoding="utf-8-sig")
     df.columns = [str(c).strip() for c in df.columns]
 
+    have = {_norm(c): c for c in df.columns}
+    rename = {}
+    for c in cols:
+        if c in df.columns:
+            continue
+        for k in [_norm(c)] + _ALIASES.get(c, []):
+            if k in have:
+                rename[have[k]] = c
+                break
+    df = df.rename(columns=rename)
+
     missing = [c for c in cols if c not in df.columns]
     if missing:
         raise DataError(
-            f"{os.path.basename(path)}: missing columns {missing}"
+            f"{os.path.basename(path)}: missing columns {missing}; "
+            f"found {list(df.columns)}"
         )
 
-    df = df[cols].apply(pd.to_numeric, errors="coerce")
-    return df
+    return df[cols].apply(pd.to_numeric, errors="coerce")
 
 
 class _Profile:
@@ -140,7 +169,9 @@ class Helium3Fluid:
         singlephase_csv: Optional[str] = None,
         saturation_csv: Optional[str] = None,
     ):
-        here = os.path.dirname(os.path.abspath(__file__))
+        here = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "he3"
+        )
 
         singlephase_csv = (
             singlephase_csv
@@ -212,8 +243,18 @@ class Helium3Fluid:
 
         lnP = np.log(Ps)
 
-        self._lnPsat = PchipInterpolator(T, lnP)
-        self._Tsat = PchipInterpolator(lnP, T)
+        # Boundary curve used to decide liquid-side / vapour-side. The table
+        # stops at Tsat_max (3.2 K) but the critical point is known, so append it
+        # as the final node. This is used ONLY to classify nodes and states;
+        # h, s, rho on the saturation line are not invented above Tsat_max.
+        if T[-1] < self.Tcrit and Ps[-1] < self.Pcrit:
+            Tb = np.append(T, self.Tcrit)
+            lnPb = np.append(lnP, math.log(self.Pcrit))
+        else:
+            Tb, lnPb = T, lnP
+
+        self._lnPsat = PchipInterpolator(Tb, lnPb)
+        self._Tsat = PchipInterpolator(lnPb, Tb)
 
         g = lambda c, f=lambda v: v: PchipInterpolator(
             T, f(df[c].to_numpy(float))
@@ -310,16 +351,13 @@ class Helium3Fluid:
                 self._LR[i][ok],
             ]
 
-            # Split an isotherm at saturation only when:
-            # 1. it is below the physical critical temperature, and
-            # 2. its temperature is covered by the saturation table.
-            #
-            # Do not extrapolate the saturation curve above Tsat_max.
-            if (
-                Ti <= self.Tsat_max * (1 + 1e-12)
-                and Ti < self.Tcrit
-            ):
+            # Split an isotherm at saturation whenever it is below the
+            # physical critical temperature (the boundary curve reaches the
+            # critical point). Saturation anchors (h, s, rho) are only added
+            # where the saturation table actually has data (T <= Tsat_max).
+            if Ti < self.Tcrit:
                 lnPs = float(self._lnPsat(Ti))
+                anchored = Ti <= self.Tsat_max * (1 + 1e-12)
 
                 if cls == "L":
                     sel = x > lnPs + 1e-9
@@ -331,13 +369,18 @@ class Helium3Fluid:
 
                 suf = "l" if cls == "L" else "v"
 
-                a = [
-                    self._sat_at_T("h" + suf, Ti),
-                    self._sat_at_T("s" + suf, Ti),
-                    self._sat_at_T("lr" + suf, Ti),
-                ]
+                if not anchored:
+                    a = None
+                else:
+                    a = [
+                        self._sat_at_T("h" + suf, Ti),
+                        self._sat_at_T("s" + suf, Ti),
+                        self._sat_at_T("lr" + suf, Ti),
+                    ]
 
-                if cls == "L":
+                if a is None:
+                    pass
+                elif cls == "L":
                     x = np.concatenate(([lnPs], x))
                     ys = [
                         np.concatenate(([a[p]], ys[p]))
@@ -490,23 +533,11 @@ class Helium3Fluid:
         if P < self.Pmin_sat:
             return "V"
 
-        if P <= self.Psat_max:
-            Ts = float(self._Tsat(math.log(P)))
-            return "L" if T < Ts else "V"
-
-        # In this pressure interval, P is below Pcrit but above the
-        # highest saturation pressure supplied by the table. The
-        # saturation boundary is unavailable, so do not guess the
-        # phase branch for a subcritical-temperature state.
-        if T < self.Tcrit:
-            raise OutOfRange(
-                f"Cannot classify state at P={P:.6g} Pa, "
-                f"T={T:.6g} K: it lies in the subcritical region "
-                "above the saturation-table pressure limit. "
-                "Extend the saturation table to support it."
-            )
-
-        return "V"
+        # Below Pcrit (including the window between the highest tabulated
+        # saturation pressure and Pcrit) use the boundary curve that was
+        # closed at the critical point.
+        Ts = float(self._Tsat(math.log(P)))
+        return "L" if T < Ts else "V"
 
     def _sat_state(self, P):
         """
@@ -537,6 +568,14 @@ class Helium3Fluid:
 
         fa = f(a) - target
         fb = f(b) - target
+
+        # A target that sits on a table edge (e.g. an effectiveness-1 outlet at
+        # exactly the warm-end temperature) can miss it by round-off only.
+        tol = 1e-9 * abs(target) + 1e-3
+        if abs(fa) <= tol:
+            return a
+        if abs(fb) <= tol:
+            return b
 
         if fa * fb > 0:
             raise OutOfRange(
@@ -623,18 +662,13 @@ class Helium3Fluid:
     def T_from_Ph(self, P: float, h: float) -> float:
         sat = self._sat_state(P)
 
-        if self.Psat_max < P < self.Pcrit:
-            raise OutOfRange(
-                f"P={P:.6g} Pa lies above the saturation-table "
-                "pressure limit but below Pcrit; the saturation "
-                "boundary is unavailable there."
-            )
-
         if sat is not None:
             if sat["hl"] <= h <= sat["hv"]:
                 return sat["T"]
 
             cls = "L" if h < sat["hl"] else "V"
+        elif self.Psat_max < P < self.Pcrit:
+            cls = self._window_class(P, "h", h)
         else:
             cls = "L" if P >= self.Pcrit else "V"
 
@@ -647,6 +681,26 @@ class Helium3Fluid:
             "h",
         )
 
+    def _window_class(self, P, what, target):
+        """P between the highest tabulated P_sat and Pcrit: no saturation h/s
+        exist there, so pick the side whose isobar profile contains the target.
+        If neither does, the state is in the (untabulated) near-critical gap."""
+        for cls in ("L", "V"):
+            try:
+                prof = self._profile(P, cls)
+            except OutOfRange:
+                continue
+            f = prof.h if what == "h" else prof.s
+            lo, hi = float(f(prof.T0)), float(f(prof.T1))
+            if lo <= target <= hi:
+                return cls
+        raise OutOfRange(
+            f"{what}={target:.6g} at P={P:.6g} Pa lies in the near-critical "
+            f"gap between the liquid and vapour profiles (P is above the "
+            f"highest saturation pressure in the table, {self.Psat_max:.6g} Pa, "
+            f"and below Pcrit); no data there."
+        )
+
     def x_v_from_Ph(self, P: float, h: float) -> Optional[float]:
         sat = self._sat_state(P)
 
@@ -657,13 +711,6 @@ class Helium3Fluid:
 
     def _hr_from_Ps(self, P: float, s: float):
         sat = self._sat_state(P)
-
-        if self.Psat_max < P < self.Pcrit:
-            raise OutOfRange(
-                f"P={P:.6g} Pa lies above the saturation-table "
-                "pressure limit but below Pcrit; the saturation "
-                "boundary is unavailable there."
-            )
 
         if sat is not None:
             if sat["sl"] <= s <= sat["sv"]:
@@ -680,6 +727,9 @@ class Helium3Fluid:
                 return h, rho
 
             cls = "L" if s < sat["sl"] else "V"
+
+        elif self.Psat_max < P < self.Pcrit:
+            cls = self._window_class(P, "s", s)
 
         else:
             cls = "L" if P >= self.Pcrit else "V"

@@ -1,0 +1,15 @@
+{
+  "name": "Zhang and Dang 2021, last CHEX 97 percent",
+  "source": "Zhang & Dang, Cryogenics 116 (2021) 103282; Section 6 and abstract: 14.7 mW at 1.0 K with eta_4 = 0.97",
+  "notes": "T_pre1 and T_pre2 are placeholders (not given in the paper). All other CHEXs ideal, as in the paper.",
+  "fluid": "he3",
+  "T_C": 1.0,
+  "P_U": 0.36,
+  "T_H": 300.0,
+  "T_pre": [80.0, 25.0, 8.0],
+  "eta": [1.0, 1.0, 1.0, 0.97],
+  "d_um": 20.0,
+  "reported": {
+    "Q_C_mW": 14.7
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "_help": "Copy this file, rename it, edit it. Keys starting with an underscore are ignored. Run:  python jt_run.py solve cases/yourfile.json",
+  "name": "my cooler",
+  "source": "where these numbers come from (paper, table, your own design)",
+  "notes": "free text, e.g. which inputs are assumed",
+
+  "fluid": "he3",
+  "_fluid_help": "'he3' = the CSV tables in data/he3/ ; or any CoolProp name such as 'Helium' (He-4) for a test",
+
+  "T_C": 1.0,
+  "_T_C_help": "cooling (evaporator) temperature [K]. Low-side pressure is taken as P_sat(T_C): no pressure drop",
+  "P_U": 0.36,
+  "_P_U_help": "upstream (high) pressure [MPa]",
+  "T_H": 300.0,
+  "_T_H_help": "warm-end (ambient) inlet temperature [K]",
+  "T_pre": [80.0, 25.0, 8.0],
+  "_T_pre_help": "gas temperature leaving each precooling heat exchanger [K], warm to cold. One entry fewer than eta",
+  "eta": [1.0, 1.0, 1.0, 0.97],
+  "_eta_help": "effectiveness of each counterflow HX, warm to cold: eta = Q / Q_max, between 0 and 1",
+  "d_um": 20.0,
+  "_d_um_help": "JT orifice diameter [um]. Use null to get specific duties only (no mass flow, no Q_C). Discharge coefficient is 1",
+
+  "sweep": {
+    "_sweep_help": "optional. Lists of values to scan (all combinations). Allowed: T_C, P_U, T_H, d_um, eta_last, T_pre_last",
+    "P_U": [0.3, 0.36, 0.5],
+    "eta_last": [1.0, 0.99, 0.97]
+  },
+
+  "reported": {
+    "_reported_help": "optional. Values the source reports, to compare against. Names: q_C_kJ_kg, mdot_mg_s, Q_C_mW, Q_pre1_mW, Q_pre2_mW, ..., T_JT_inlet_K, P_D_kPa",
+    "Q_C_mW": 14.7
+  }
+}

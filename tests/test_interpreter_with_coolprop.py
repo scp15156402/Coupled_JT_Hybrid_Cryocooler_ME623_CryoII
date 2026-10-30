@@ -1,15 +1,13 @@
 """
 Tests the CSV interpreter using CoolProp as the 'TA': fills the same two-sheet layout for He-4
 (not He-3 physics), loads it with Helium3Fluid, and compares against CoolProp.
-Run:  python test_interpreter_with_coolprop.py
+Run (from the project root):  python -m tests.test_interpreter_with_coolprop
 """
 import math, os, random, sys, tempfile
 from math import ceil, log
 import numpy as np, pandas as pd
 from CoolProp.CoolProp import PropsSI
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, "/mnt/user-data/uploads")
-from helium3_properties import Helium3Fluid, SP_COLS, SAT_COLS
+from jt.properties import Helium3Fluid, SP_COLS, SAT_COLS
 
 FL = "Helium"
 def geo(lo, hi, step, inc=True):
@@ -40,7 +38,7 @@ def rel(a, b): return abs(a-b)/max(abs(b), 1e-30)
 def main():
     d = tempfile.mkdtemp(); make(d)
     f = Helium3Fluid(os.path.join(d, "SinglePhase.csv"), os.path.join(d, "Saturation.csv"))
-    print("grid", len(f.T), "x", len(f.P), " Tc_table=%.4f Pc_table=%.4g" % (f.Tc, f.Pc))
+    print("grid", len(f.T), "x", len(f.P))
     random.seed(1)
     # off-grid random single-phase states
     errs = {"h": [], "s": [], "rho": [], "Tinv": [], "hPs": [], "rhoPs": []}
@@ -88,7 +86,7 @@ def main():
     # saturation lookups
     print("Psat(3.0)=%.6g vs %.6g ; hv(3.0)=%.6g vs %.6g" % (f.Psat(3.0), PropsSI("P","T",3.0,"Q",1,FL), f.h_sat_vapor(3.0), PropsSI("H","T",3.0,"Q",1,FL)))
     # full cycle with both backends
-    import jt_cycle_core as jt
+    from jt import cycle_core as jt
     cp = jt.CoolPropFluid(FL)
     for Tc, Pu, eta4 in [(2.5, 0.36e6, 1.0), (2.5, 0.36e6, 0.97), (3.0, 0.5e6, 1.0)]:
         out = []

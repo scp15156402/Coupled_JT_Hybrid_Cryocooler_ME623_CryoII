@@ -1,9 +1,9 @@
 import math
 import unittest
 
-from jt_cycle_core import (
-    State, chex_AC, chex_AB, critical_mass_flux, critical_mass_flux_HEM,
-    solve_cycle, state_labels,
+from jt.cycle_core import (
+    State, chex_AC, chex_limits, chex_profile_check, critical_mass_flux,
+    critical_mass_flux_HEM, solve_cycle, state_labels,
 )
 
 
@@ -57,17 +57,59 @@ class TestJTCore(unittest.TestCase):
         self.assertEqual(labels["JT_out"], 9)
         self.assertEqual(labels["evap_out"], 10)
 
-    def test_chex_inverse_round_trip(self):
+    def test_chex_forward_ideal_gas(self):
         f = self.fluid
         A = State(P=1.0e6, T=300.0, h=f.h(1.0e6, 300.0))
         C = State(P=1.0e4, T=10.0, h=f.h(1.0e4, 10.0))
-        eta = 0.8
-        B, D = chex_AC(A, C, C.P, eta, f)
-        C2, D2 = chex_AB(A, B, C.P, eta, f)
+        B, D = chex_AC(A, C, C.P, 0.8, f)
         self.assertAlmostEqual(B.T, 68.0, places=8)
         self.assertAlmostEqual(D.T, 242.0, places=8)
-        self.assertAlmostEqual(C2.h, C.h, places=8)
-        self.assertAlmostEqual(D2.h, D.h, places=8)
+        # Equal heat capacities: both walls coincide.
+        Q_max, W_warm, W_cold, binding = chex_limits(A, C, C.P, f)
+        self.assertAlmostEqual(W_warm, W_cold, places=6)
+        self.assertEqual(binding, "both")
+
+    def test_eta_one_cannot_cross_cold_end(self):
+        class CpMismatchFluid(IdealGasTestFluid):
+            # Liquid-like high-pressure side: smaller cp than the low side,
+            # so the cold-end wall is closer than the warm-end wall.
+            def h(self, P, T):
+                return (500.0 if P > 5.0e5 else 1000.0) * T
+
+            def T_from_Ph(self, P, h):
+                return h / (500.0 if P > 5.0e5 else 1000.0)
+
+        f = CpMismatchFluid()
+        A = State(P=1.0e6, T=100.0, h=f.h(1.0e6, 100.0))
+        C = State(P=1.0e4, T=20.0, h=f.h(1.0e4, 20.0))
+        Q_max, W_warm, W_cold, binding = chex_limits(A, C, C.P, f)
+        self.assertEqual(binding, "cold_end")
+        self.assertLess(W_cold, W_warm)
+        B, D = chex_AC(A, C, C.P, 1.0, f)
+        self.assertGreaterEqual(B.T, C.T - 1e-9)   # no cold-end crossover
+        self.assertAlmostEqual(B.T, C.T, places=8)  # touches the cold wall
+        self.assertLess(D.T, A.T)                   # warm-end wall not reached
+        # The cold-side-only definition would have forced B.T below C.T.
+        h_D_old = C.h + (f.h(C.P, A.T) - C.h)
+        self.assertLess(A.h - (h_D_old - C.h), f.h(A.P, C.T))
+
+    def test_profile_check_flags_interior_crossing(self):
+        class KinkFluid(IdealGasTestFluid):
+            def T_from_Ph(self, P, h):
+                if P > 5.0e5:
+                    return h / 1000.0
+                # Low side warms very quickly in the middle of the duty.
+                return h / 1000.0 + (30.0 if h > 40000.0 else 0.0) * min((h - 40000.0) / 5000.0, 1.0)
+
+        f = KinkFluid()
+        A = State(P=1.0e6, T=100.0, h=100000.0)
+        B = State(P=1.0e6, T=20.0, h=20000.0)
+        C = State(P=1.0e4, T=10.0, h=10000.0)
+        D = State(P=1.0e4, T=90.0, h=90000.0)
+        flags = chex_profile_check(A, B, C, D, f)
+        self.assertTrue(any("INTERNAL" in x for x in flags))
+        ok = chex_profile_check(A, B, C, D, self.fluid)
+        self.assertEqual(ok, [])
 
     def test_cycle_four_chex(self):
         result = solve_cycle(
