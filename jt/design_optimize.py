@@ -503,7 +503,7 @@ def _write_heatmap(path: Path, rows: Sequence[Mapping[str, Any]], best: Mapping[
         fig, ax = plt.subplots(figsize=(8.5, 5.5), constrained_layout=True)
         contour = ax.tricontourf(x, y, z, levels=18)
         fig.colorbar(contour, ax=ax, label=r"$Q_C$ (mW)")
-        ax.plot(float(best["tpre_last_k"]), float(best["pu_mpa"]), marker="*", ms=14,
+        ax.plot(float(best["tpre_last_k"]), float(best["pu_mpa"]), marker="o", mfc="none", mew=2, ms=11,
                 color="black", label="Maximum sampled $Q_C$")
         ax.set_xlabel(r"Last PHEX precooling temperature $T_{pre,last}$ (K)")
         ax.set_ylabel(r"Upstream pressure $P_U$ (MPa)")

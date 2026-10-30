@@ -567,7 +567,7 @@ def _plot_stage_curves(fluid, cfg, tl, p_marks, tpre_hi, path: Path, pu_rng) -> 
     """Fig. 5 style (vs P_U at T_pre,last) and Fig. 7 style (vs T_pre at several P_U)."""
     plt = _plt()
     tc = cfg["T_C"]
-    pus = np.linspace(pu_rng[0], pu_rng[1], 70)
+    pus = np.linspace(pu_rng[0], pu_rng[1], 241)
     rows = do.stage_sweep(fluid, tc_k=tc, pu_values_mpa=pus, tpre_values_k=[tl], eta_last=cfg["eta"][-1], flow_model="none")
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(11, 4.2), constrained_layout=True)
     f = lambda key: np.array([r.get(key, np.nan) if isinstance(r.get(key), (int, float)) else np.nan for r in rows], float)
@@ -583,7 +583,7 @@ def _plot_stage_curves(fluid, cfg, tl, p_marks, tpre_hi, path: Path, pu_rng) -> 
     a1.set_ylim(bottom=0)
     a1.legend(fontsize=8)
     a1.grid(alpha=0.3)
-    ts = np.linspace(max(1.1 * tc, tc + 0.2), tpre_hi, 60)
+    ts = np.linspace(max(1.1 * tc, tc + 0.2), tpre_hi, 241)
     for name, p in p_marks.items():
         if not p:
             continue
@@ -611,7 +611,7 @@ def _plot_heat(rows, key, label, best, path: Path, title: str) -> None:
     fig, ax = plt.subplots(figsize=(7, 4.8), constrained_layout=True)
     c = ax.tricontourf(x, y, z, levels=18)
     fig.colorbar(c, ax=ax, label=label)
-    ax.plot(best["tpre_last_k"], best["pu_mpa"], "k*", ms=15, label="maximum")
+    ax.plot(best["tpre_last_k"], best["pu_mpa"], "ko", mfc="none", mew=2, ms=11, label="maximum")
     ax.set_xlabel("T_pre,last  [K]")
     ax.set_ylabel(r"$P_U$  [MPa]")
     ax.set_title(title, fontsize=10)

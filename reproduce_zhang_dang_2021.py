@@ -301,7 +301,7 @@ def section_fig5(fluid, cfg: Dict[str, Any], out: Path) -> Dict[str, Any]:
     ax.plot(x, np.where(ok, qc, np.nan), "-", color="k", lw=2, label="q_C (eta = 1)")
     ax.plot(opt["pu_opt_mpa"], opt["value"] / 1000.0, "ko", ms=7, label="this work: optimum")
     if tc == PAPER["T_C_K"] and tp == PAPER["T_pre3_K"]:
-        ax.plot(PAPER["P_U_opt_MPa"], PAPER["q_C_opt_kJ_kg"], "g*", ms=14, label="paper: optimum (text)")
+        ax.plot(PAPER["P_U_opt_MPa"], PAPER["q_C_opt_kJ_kg"], "o", ms=10, mfc="none", mec="g", mew=2, label="paper: optimum (text)")
         ax.axvline(PAPER["P_U_max_MPa"], color="g", ls=":", label="paper: P_U max (text)")
     ax.set(xlabel="P_U [MPa]", ylabel="specific capacity [kJ/kg]", title=f"Fig. 5 check: T_C = {tc:g} K, T_pre3 = {tp:g} K")
     ax.set_ylim(bottom=0); ax.grid(alpha=0.3); ax.legend()
@@ -418,7 +418,7 @@ def section_fig15(fluid, cfg: Dict[str, Any], out: Path) -> Dict[str, Any]:
     ax[0].legend(h1 + h2, l1 + l2, fontsize=8); ax[0].grid(alpha=0.3)
     ax[1].plot(e, _arr(rows, "Q_C_reduction_percent"), "o-", ms=4, color="k", label="this work")
     if tc == PAPER["T_C_K"]:
-        ax[1].plot(PAPER["eta_real"], PAPER["Q_C_drop_097_percent"], "g*", ms=14, label="paper: eta = 0.97")
+        ax[1].plot(PAPER["eta_real"], PAPER["Q_C_drop_097_percent"], "o", ms=10, mfc="none", mec="g", mew=2, label="paper: eta = 0.97")
     ax[1].set(xlabel="eta_4", ylabel="Q_C reduction vs eta_4 = 1 [%]", title="Fig. 16 check (relative)")
     ax[1].grid(alpha=0.3); ax[1].legend(fontsize=8)
     fig.suptitle(f"Last-CHEX effectiveness: T_C = {tc:g} K, T_pre3 = {tp:g} K, P_U = {pu:g} MPa, d = {cfg['d_m']*1e6:g} um")
@@ -476,6 +476,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     ap.add_argument("--pu-max", type=float, default=1.2, help="upper P_U search bound [MPa]")
     ap.add_argument("--hem-grid", type=int, default=120, help="pressure samples per HEM evaluation")
     ap.add_argument("--quick", action="store_true", help="coarser grids (for testing)")
+    ap.add_argument("--dense", action="store_true", help="fine grids for smooth publication plots (slow)")
+    ap.add_argument("--n-curve", type=int, help="points per Fig. 5 / Fig. 7 curve (overrides preset)")
+    ap.add_argument("--n-tpre", type=int, help="number of T_pre3 values for the Eq. 35/36 optimum search")
+    ap.add_argument("--n-opt-grid", type=int, help="coarse P_U grid per optimum search")
+    ap.add_argument("--n-flux", type=int, help="P_U points per mass-flux curve")
+    ap.add_argument("--eta-step", type=float, help="step of the eta_4 sweep (Figs. 15-16)")
     a = ap.parse_args(argv)
     if a.self_test:
         suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestFits)
@@ -494,6 +500,14 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         "fig15_tpre": 8.0, "fig15_pu": 0.36,
         "eta_grid": np.round(np.arange(0.85, 1.0001, 0.03 if q else 0.01), 4) if not q else [0.85, 0.91, 0.97, 1.0],
     }
+    if a.dense:
+        cfg.update({"n_curve": 241, "n_opt_grid": 61, "tpre_grid": np.linspace(4.0, 30.0, 40), "n_flux": 46,
+                    "eta_grid": np.round(np.arange(0.85, 1.0001, 0.0025), 4)})
+    if a.n_curve: cfg["n_curve"] = a.n_curve
+    if a.n_opt_grid: cfg["n_opt_grid"] = a.n_opt_grid
+    if a.n_tpre: cfg["tpre_grid"] = np.linspace(4.0, 30.0, a.n_tpre)
+    if a.n_flux: cfg["n_flux"] = a.n_flux
+    if a.eta_step: cfg["eta_grid"] = np.round(np.arange(0.85, 1.0 + a.eta_step / 2, a.eta_step), 6)
     out = Path(a.outdir); out.mkdir(parents=True, exist_ok=True)
     comparable = bool(is_he3 and math.isclose(a.tc, PAPER["T_C_K"]) and math.isclose(a.diameter_um, PAPER["d_um"]))
     report: Dict[str, Any] = {"fluid_backend": label, "T_C_K": a.tc, "d_um": a.diameter_um,

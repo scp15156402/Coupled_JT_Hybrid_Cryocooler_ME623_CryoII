@@ -1,0 +1,24 @@
+{
+  "name": "Helium_3_1K_20um_4_stage",
+  "fluid": "he3",
+  "T_C": 1.0,
+  "P_U": null,
+  "T_H": 300.0,
+  "T_pre": [
+    null,
+    null,
+    8.0
+  ],
+  "eta": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+  ],
+  "d_um": 20.0,
+  "reference": {
+    "citation": "design example",
+    "kind": "Own design"
+  },
+  "source": "design example"
+}

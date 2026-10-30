@@ -31,17 +31,30 @@ Run everything from this folder. Put the He-3 tables in `data/he3/`
 ## Quick start
 
 ```
+python run_all.py --quick      # everything: He-3 check, paper 1 scorecard, then the other papers (Windows: run_all.bat)
+```
+`run_all.py` runs the He-3 check, reproduces and scores Zhang & Dang 2021, then solves each other-paper case and compares it with the paper's numbers (PASS inside a tolerance for idealised paper values, INFO for measured values; summary in `results/validation_all/`). Drop `--quick` for the full-grid paper-1 run; `--skip-paper1` runs only the other papers.
+
+Step by step:
+
+```
 python jt_run.py check                 # are the He-3 tables present and sane?
 python jt_run.py validate --quick      # reproduce the paper, pass/fail scorecard
 python jt_run.py run cases/zhang_dang_2021_ideal.json     # solve one case, save everything
 ```
+
+To run everything in one go (data check, unit tests, validation, every case file; logs in `results/run_all/`):
+```
+python run_all.py --quick        # about 80 s;  add --optimize for the blank-input optimiser demo (+90 s)
+```
+On Windows, double-click `run_all.bat` (it installs missing packages first).
 
 ## Commands
 
 | Command | What it does |
 |---|---|
 | `check` | He-3 tables present, readable, consistent |
-| `validate [--quick]` | **Workflow 1.** Data check, unit tests, paper reproduction, scorecard in `results/validation/` |
+| `validate [--quick \| --dense]` | **Workflow 1.** Data check, unit tests, paper reproduction, scorecard in `results/validation/`. `--dense` uses the fine grids of the report (241-point curves, 61-point optimisation grid, 40 precooling temperatures, 46 flux points, eta step 0.0025); individual grids: `--n-curve`, `--n-opt-grid`, `--n-tpre`, `--n-flux`, `--eta-step` |
 | `new --fluid ... --T_C ... --eta ...` | Create a case file named by the standard scheme, with a data reference, and check feasibility |
 | `feasible cases/x.json` | Is the design physically possible? Verdict and reasons |
 | `run cases/x.json` | Solve (all inputs given) or **optimise** (blank inputs, or `--optimize`). Prints state points and PHEX loads, saves plots and CSVs |
@@ -51,8 +64,8 @@ python jt_run.py run cases/zhang_dang_2021_ideal.json     # solve one case, save
 
 ### The three workflows
 
-1. **Validate the paper:** `python jt_run.py validate` (add `--quick` for coarse grids).
-2. **Another paper's cooler:** write a case file from the paper (inputs, plus `reported` values and a `reference` block), then `python jt_run.py solve cases/<name>.json`. Five such cases are included (`ma2019_*`, `liu2017_*`).
+1. **Validate the paper:** `python jt_run.py validate` (`--quick` for coarse grids, `--dense` for the grids used in the report and presentation).
+2. **Another paper's cooler:** write a case file from the paper (inputs, plus `reported` values and a `reference` block), then `python jt_run.py solve cases/<name>.json`. Cases from Liu et al. 2017 and Ma et al. 2019 are included (`liu2017_*`, `ma2019_*`); only their ideal-model values are used for comparison.
 3. **Your own design:** `new`, then `feasible`, then `run`.
 
 ### Creating a case
@@ -83,6 +96,15 @@ What `run` does when something is blank:
 2. if `T_pre,last` is given, finds the best `P_U` for `q_C` and `Q_C` at that `T_pre,last`;
 3. chooses the upstream precooler temperatures by minimising the Carnot-weighted precooling load `sum_j Q_pre,j (T_H/T_j - 1)` (the upstream temperatures cannot change `q_C`, the mass flow or `Q_C`, only how the load is shared between precoolers), and saves a sensitivity map per upstream precooler;
 4. solves the cycle at the chosen values.
+
+### Extra figures
+
+```
+python make_extra_figures.py --n-pu 200 --outdir results/extra
+```
+Writes `QC_vs_PU_Tpre.png/.csv` (Q_C vs P_U for several last-stage precooling temperatures, T_C = 1 K, d = 20 um) and `cp_He3.png` (He-3 c_p at P_U and P_D). Options: `--n-pu`, `--n-t`, `--tpre 4 5 8 10 12`, `--hem-grid`, `--outdir`. A progress bar with elapsed time and an estimate of the time left is printed.
+
+Optima in all plots are marked with open circles.
 
 ### Where results go
 
@@ -121,21 +143,30 @@ energy balance fails, no net refrigeration) and warnings (internal pinch, unchok
 - Precooling is imposed: `T_pre` is the gas temperature leaving each precooler.
 - Each CHEX has effectiveness `eta = Q/Q_max`, `Q_max` the smaller of the warm-end and cold-end limits.
 - For non-helium fluids use `P_U` above the fluid's critical pressure (Ne 2.66, H2 1.30, N2 3.40 MPa); below it the hot stream condenses inside the exchangers and the property lookup fails.
-- Real coolers will deliver less than the model predicts (heat leaks, return-line pressure drop). See the validation chapter of the PDF.
+- Real coolers will deliver less than the model predicts (heat leaks, return-line pressure drop). See the report (`report/jt_report.pdf`).
+- In `new`, write placeholders with `=`, e.g. `--T_pre=-,-,8 --P_U=-` (a value starting with `-` is otherwise read as an option).
 
 ## Validation status
 
-- Zhang & Dang 2021 with the supplied He-3 tables: 27 of 27 checks pass. `P_U,opt` 0.358 MPa (paper 0.36), `q_C,opt` 7.98 kJ/kg (8.0), `P_U,max` 1.131 MPa (1.13), `m_dot` 2.339 mg/s (2.34), `Q_C` 18.62 mW (18.7); with `eta_4 = 0.97`, 14.74 mW (14.7), a 20.8 % drop (paper about 21 %).
-- Liu et al. 2017 (He-4 open cycle): `Q_C` 53.1 mW vs 52.5 mW calculated in the paper (+1 %), once the last-CHEX effectiveness is derived from the paper's temperatures.
-- Ma et al. 2019 (three cases) and Ma et al. 2019, Sci China: the model does not match the measured `Q_C` (it has no heat leak and no return-line pressure drop); the individual numbers and sensitivities are in the PDF and in each case file's `reference.note`.
+Dense grids (`validate --dense`), ideal model, identical inputs to each source.
+
+- **Zhang & Dang 2021** (He-3 tables): 27 of 27 checks pass. `P_U,opt` 0.358 MPa (paper 0.36), `q_C,opt` 7.98 kJ/kg (8.0), `P_U,max` 1.131 MPa (1.13), `m_dot` 2.339 mg/s (2.34), `Q_C` 18.62 mW (18.7); with `eta_4 = 0.97`, 14.74 mW (14.7), a 20.8 % drop (paper about 21 %).
+  - Optimum vs Eq. 36: 1.39 % mean, 3.72 % worst; `q_C,opt` vs Eqs. 35-36: 3.12 % mean.
+  - `T_pre3,opt` vs Eq. 36 at 0.3/0.5/0.7/0.9 MPa: 0.01/0.23/0.34/0.78 K.
+  - HEM flux vs Table 2 at T_C = 1/2/2.6/3 K: mean 0.25/0.41/0.51/0.69 %, worst 0.71/0.72/2.28/1.49 %.
+- **Liu et al. 2017** (He-4): `Q_C` 53.1 mW vs 52.5 mW calculated in the paper (+1.1 %), with the last-CHEX effectiveness (0.9857) derived from the paper's temperatures.
+- **Ma et al. 2019, design point** (He-4): 90.2-108.8 mW for eta 0.97-1 vs the 100 mW design value (eta about 0.985); 15 K precooler load 278 mW vs 260 mW.
+- Measured performance from other papers is not used for validation: it includes heat leak and return-line pressure drop, which the ideal model leaves out by construction. The remaining measured case files are informative only.
 - 29 unit tests: `python -m unittest discover -s tests -t .`
-- The scorecard tolerances (`TOL` at the top of `jt_run.py`) are provisional and looser than the agreement actually obtained.
+- The scorecard tolerances (`TOL` at the top of `jt_run.py`) are looser than the agreement obtained.
 
 ## Folders
 
 ```
 jt_run.py                       the command-line front door
+run_all.py / run_all.bat        run check, tests, validation and every case in one go
 reproduce_zhang_dang_2021.py    paper reproduction (called by `validate`)
+make_extra_figures.py           Q_C vs P_U curves and He-3 c_p
 jt/
   cycle_core.py                 states, CHEX solver, solve_cycle, choked-flow model, CoolProp adapter
   properties.py                 Helium3Fluid: CSV-backed interpolation
@@ -143,7 +174,7 @@ jt/
   phex_load_map.py              PHEX load map vs warmer precooler temperatures
   workflow.py                   configs, feasibility check, run storage, optimiser pipeline
 data/he3/                       SinglePhase_He_3.csv, Saturation_He_3.csv, README.md
-cases/                          case files (template, Zhang & Dang, five other-paper cases, your own)
+cases/                          case files (template, Zhang & Dang, other-paper cases, your own)
 tests/                          unit tests
 results/                        generated output
 ```
