@@ -1,0 +1,18 @@
+{
+  "config_id": "Helium_3_1K_20um_4_stage",
+  "config_sha": "42e059f9cff9",
+  "kind": "optimize",
+  "time": "2026-10-31T03:41:24",
+  "headline": "P_U = 0.3584 MPa, T_pre,last = 8 K, Q_C = 18.62 mW",
+  "files": [
+    "ph_cycle.png",
+    "stage_curves.png",
+    "states.csv",
+    "upstream_map.csv",
+    "upstream_map.png"
+  ],
+  "reference": {
+    "citation": "design example",
+    "kind": "Own design"
+  }
+}

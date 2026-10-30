@@ -1,0 +1,27 @@
+{
+  "name": "Ma 2019 Cryogenics 104 open loop, 4x20 um, measured",
+  "fluid": "Helium",
+  "T_C": 4.55,
+  "P_U": 2.0,
+  "T_H": 300.0,
+  "T_pre": [
+    100.0,
+    15.0
+  ],
+  "eta": [
+    0.97,
+    0.97,
+    0.97
+  ],
+  "mdot_mg_s": 11.08,
+  "reference": {
+    "citation": "Ma Y, Quan J, Wang J, et al. Development of a space 100 mW@5 K closed loop JT cooler. Cryogenics 104 (2019) 102983",
+    "doi": "10.1016/j.cryogenics.2019.102983",
+    "kind": "Validation against a measured cooler",
+    "location": "Table 2 (4x20 um: 11.08 mg/s, 100.3 mW @ 4.55 K, 2.0 MPa)",
+    "note": "Precool temperatures are the design values (100/15 K); the paper does not give the measured ones for this test. eta = 0.97 assumed. Multi-orifice element not modelled: measured mdot used."
+  },
+  "reported": {
+    "Q_C_mW": 100.3
+  }
+}

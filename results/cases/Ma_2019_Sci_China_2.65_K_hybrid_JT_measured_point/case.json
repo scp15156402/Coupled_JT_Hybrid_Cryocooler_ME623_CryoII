@@ -1,0 +1,28 @@
+{
+  "name": "Ma 2019 Sci China 2.65 K hybrid JT, measured point",
+  "fluid": "Helium",
+  "T_C": 2.71,
+  "P_U": 0.6,
+  "T_H": 300.0,
+  "T_pre": [
+    64.5,
+    14.6
+  ],
+  "eta": [
+    0.972,
+    0.973,
+    0.972
+  ],
+  "mdot_mg_s": 1.2,
+  "reference": {
+    "citation": "Ma Y X, Quan J, Wang J, et al. A closed loop 2.65 K hybrid JT cooler for future space application. Sci China Tech Sci 62(2) (2019) 361-364",
+    "doi": "10.1007/s11431-018-9364-8",
+    "kind": "Validation against a measured cooler",
+    "location": "Table 2 (precool 64.5/14.6 K, Ph 0.6 MPa); text: eta 97.2/97.3/97.2 %, mdot 1.2 mg/s, 1.48 mW at 2.71 K",
+    "note": "He-4 via CoolProp. Measured mdot is used (their orifice: 2 x 30 um in series, not modelled). Our model has no heat leak and no return-line pressure drop, so Q_C should come out higher than the measured 1.48 mW; their return pressure was 12 kPa at the compressor, ~13.3 kPa at the evaporator."
+  },
+  "reported": {
+    "Q_C_mW": 1.48,
+    "P_D_kPa": 13.3
+  }
+}

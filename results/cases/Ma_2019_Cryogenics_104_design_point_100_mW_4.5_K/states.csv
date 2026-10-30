@@ -1,0 +1,12 @@
+﻿state,role,P_Pa,T_K,h_J_kg,x_vapour,phase
+1,CHEX1 hot in,2000000.0,300.0,1569520.7832330717,,single_phase_or_unknown
+2,CHEX1 hot out,2000000.0,103.78061365947383,548924.088839509,,single_phase_or_unknown
+3,CHEX2 hot in,2000000.0,100.0,529168.95088411,,single_phase_or_unknown
+4,CHEX2 hot out,2000000.0,19.253503507189166,95527.55254951457,,single_phase_or_unknown
+5,CHEX3 hot in,2000000.0,15.0,69024.343843981,,single_phase_or_unknown
+6,CHEX3 hot out,2000000.0,5.121491493359315,11605.740516143465,,single_phase_or_unknown
+7,JT valve outlet,130056.14684110125,4.500000000000224,11605.740516143465,0.538001655280238,two_phase
+8,CHEX3 cold in; evaporator outlet,130056.14684110125,4.5,20196.0903096309,1.0,saturated_vapour
+9,CHEX2 cold in; CHEX3 cold out,130056.14684110125,14.221700796377837,77614.69363746843,,single_phase_or_unknown
+10,CHEX1 cold in; CHEX2 cold out,130056.14684110125,97.418656263222,511256.0919720638,,single_phase_or_unknown
+11,CHEX1 cold out,130056.14684110125,293.92190226383775,1531852.7863656266,,single_phase_or_unknown

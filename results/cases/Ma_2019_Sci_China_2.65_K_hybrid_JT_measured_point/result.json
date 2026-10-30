@@ -1,0 +1,67 @@
+{
+  "case": {
+    "name": "Ma 2019 Sci China 2.65 K hybrid JT, measured point",
+    "fluid": "Helium",
+    "T_C": 2.71,
+    "P_U": 0.6,
+    "T_H": 300.0,
+    "T_pre": [
+      64.5,
+      14.6
+    ],
+    "eta": [
+      0.972,
+      0.973,
+      0.972
+    ],
+    "mdot_mg_s": 1.2,
+    "reference": {
+      "citation": "Ma Y X, Quan J, Wang J, et al. A closed loop 2.65 K hybrid JT cooler for future space application. Sci China Tech Sci 62(2) (2019) 361-364",
+      "doi": "10.1007/s11431-018-9364-8",
+      "kind": "Validation against a measured cooler",
+      "location": "Table 2 (precool 64.5/14.6 K, Ph 0.6 MPa); text: eta 97.2/97.3/97.2 %, mdot 1.2 mg/s, 1.48 mW at 2.71 K",
+      "note": "He-4 via CoolProp. Measured mdot is used (their orifice: 2 x 30 um in series, not modelled). Our model has no heat leak and no return-line pressure drop, so Q_C should come out higher than the measured 1.48 mW; their return pressure was 12 kPa at the compressor, ~13.3 kPa at the evaporator."
+    },
+    "reported": {
+      "Q_C_mW": 1.48,
+      "P_D_kPa": 13.3
+    },
+    "d_um": null,
+    "sweep": {}
+  },
+  "provenance": {
+    "date": "2026-10-30T19:46:25",
+    "fluid": "Helium"
+  },
+  "metrics": {
+    "q_C_kJ_kg": 3.7461917478335383,
+    "T_JT_inlet_K": 6.418097232761611,
+    "P_D_kPa": 15.0745737200937,
+    "energy_residual": 1.0186340659856796e-10,
+    "chex_limiting_end": "warm_end,warm_end,warm_end",
+    "q_pre1_kJ_kg": 28.51809464094159,
+    "q_pre2_kJ_kg": 11.5812536878003,
+    "mdot_mg_s": 1.2,
+    "Q_C_mW": 4.495430097400246,
+    "Q_pre1_mW": 34.22171356912991,
+    "Q_pre2_mW": 13.897504425360362,
+    "liquid_fraction_after_JT": 0.16035938466832478
+  },
+  "flags": [],
+  "comparison": [
+    {
+      "metric": "Q_C_mW",
+      "ours": 4.495430097400246,
+      "reported": 1.48,
+      "difference": 3.015430097400246,
+      "difference_percent": 203.74527685136798
+    },
+    {
+      "metric": "P_D_kPa",
+      "ours": 15.0745737200937,
+      "reported": 13.3,
+      "difference": 1.7745737200936986,
+      "difference_percent": 13.34265954957668
+    }
+  ]
+}

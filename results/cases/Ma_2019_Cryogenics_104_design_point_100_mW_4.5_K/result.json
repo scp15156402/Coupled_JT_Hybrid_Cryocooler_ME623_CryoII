@@ -1,0 +1,83 @@
+{
+  "case": {
+    "name": "Ma 2019 Cryogenics 104 design point 100 mW@4.5 K",
+    "fluid": "Helium",
+    "T_C": 4.5,
+    "P_U": 2.0,
+    "T_H": 300.0,
+    "T_pre": [
+      100.0,
+      15.0
+    ],
+    "eta": [
+      0.97,
+      0.97,
+      0.97
+    ],
+    "mdot_mg_s": 10.5,
+    "reference": {
+      "citation": "Ma Y, Quan J, Wang J, et al. Development of a space 100 mW@5 K closed loop JT cooler. Cryogenics 104 (2019) 102983",
+      "doi": "10.1016/j.cryogenics.2019.102983",
+      "kind": "Validation against a measured cooler",
+      "location": "Table 1 design values (100/15 K precool, 2.0 MPa/0.13 MPa, 10.5 mg/s, 350 and 260 mW precooling, 100 mW @ 4.5 K)",
+      "note": "eta = 0.97 is the paper's lower bound ('not lower than 0.97'), not a measured value. Compare the PHEX loads with the design precooling powers. Sensitivity: Q_C = 90.2 mW at eta = 0.97, 108.8 mW at eta = 1; the paper's 100 mW design sits between (about eta = 0.985)."
+    },
+    "reported": {
+      "Q_C_mW": 100.0,
+      "Q_pre1_mW": 350.0,
+      "Q_pre2_mW": 260.0,
+      "P_D_kPa": 130.0
+    },
+    "d_um": null,
+    "sweep": {}
+  },
+  "provenance": {
+    "date": "2026-10-30T19:45:00",
+    "fluid": "Helium"
+  },
+  "metrics": {
+    "q_C_kJ_kg": 8.590349793487436,
+    "T_JT_inlet_K": 5.121491493359315,
+    "P_D_kPa": 130.05614684110125,
+    "energy_residual": -7.275957614183426e-11,
+    "chex_limiting_end": "warm_end,warm_end,cold_end",
+    "q_pre1_kJ_kg": 19.755137955398997,
+    "q_pre2_kJ_kg": 26.503208705533574,
+    "mdot_mg_s": 10.5,
+    "Q_C_mW": 90.19867283161807,
+    "Q_pre1_mW": 207.42894853168949,
+    "Q_pre2_mW": 278.28369140810247,
+    "liquid_fraction_after_JT": 0.461998344719762
+  },
+  "flags": [],
+  "comparison": [
+    {
+      "metric": "Q_C_mW",
+      "ours": 90.19867283161807,
+      "reported": 100.0,
+      "difference": -9.801327168381931,
+      "difference_percent": -9.801327168381931
+    },
+    {
+      "metric": "Q_pre1_mW",
+      "ours": 207.42894853168949,
+      "reported": 350.0,
+      "difference": -142.57105146831051,
+      "difference_percent": -40.734586133803
+    },
+    {
+      "metric": "Q_pre2_mW",
+      "ours": 278.28369140810247,
+      "reported": 260.0,
+      "difference": 18.28369140810247,
+      "difference_percent": 7.0321890031163345
+    },
+    {
+      "metric": "P_D_kPa",
+      "ours": 130.05614684110125,
+      "reported": 130.0,
+      "difference": 0.056146841101252676,
+      "difference_percent": 0.04318987777019437
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "Ma 2019 Cryogenics 104 design point 100 mW@4.5 K",
+  "fluid": "Helium",
+  "T_C": 4.5,
+  "P_U": 2.0,
+  "T_H": 300.0,
+  "T_pre": [
+    100.0,
+    15.0
+  ],
+  "eta": [
+    0.97,
+    0.97,
+    0.97
+  ],
+  "mdot_mg_s": 10.5,
+  "reference": {
+    "citation": "Ma Y, Quan J, Wang J, et al. Development of a space 100 mW@5 K closed loop JT cooler. Cryogenics 104 (2019) 102983",
+    "doi": "10.1016/j.cryogenics.2019.102983",
+    "kind": "Validation against a measured cooler",
+    "location": "Table 1 design values (100/15 K precool, 2.0 MPa/0.13 MPa, 10.5 mg/s, 350 and 260 mW precooling, 100 mW @ 4.5 K)",
+    "note": "eta = 0.97 is the paper's lower bound ('not lower than 0.97'), not a measured value. Compare the PHEX loads with the design precooling powers. Sensitivity: Q_C = 90.2 mW at eta = 0.97, 108.8 mW at eta = 1; the paper's 100 mW design sits between (about eta = 0.985)."
+  },
+  "reported": {
+    "Q_C_mW": 100.0,
+    "Q_pre1_mW": 350.0,
+    "Q_pre2_mW": 260.0,
+    "P_D_kPa": 130.0
+  }
+}

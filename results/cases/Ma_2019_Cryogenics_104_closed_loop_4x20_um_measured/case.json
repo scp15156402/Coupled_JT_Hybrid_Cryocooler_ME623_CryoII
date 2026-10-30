@@ -1,0 +1,27 @@
+{
+  "name": "Ma 2019 Cryogenics 104 closed loop, 4x20 um, measured",
+  "fluid": "Helium",
+  "T_C": 5.02,
+  "P_U": 2.0,
+  "T_H": 300.0,
+  "T_pre": [
+    100.0,
+    15.0
+  ],
+  "eta": [
+    0.97,
+    0.97,
+    0.97
+  ],
+  "mdot_mg_s": 11.02,
+  "reference": {
+    "citation": "Ma Y, Quan J, Wang J, et al. Development of a space 100 mW@5 K closed loop JT cooler. Cryogenics 104 (2019) 102983",
+    "doi": "10.1016/j.cryogenics.2019.102983",
+    "kind": "Validation against a measured cooler",
+    "location": "Table 3 (4x20 um: 11.02 mg/s, Ph/Pl 2.0/0.16 MPa, 102.3 mW @ 5.02 K)",
+    "note": "Precool temperatures are the design values (100/15 K); eta = 0.97 assumed. The quoted 0.16 MPa is the compressor suction; our evaporator pressure is P_sat(5.02 K) = 0.199 MPa, close to the He-4 critical pressure, so this case is sensitive to the return-line pressure drop that the model does not include. Sensitivity: Q_C = 47 mW with T_C = 5.02 K, 78 mW with T_C = T_sat(0.16 MPa) = 4.745 K, 66 mW with eta = 1 and T_C = 5.02 K; measured 102.3 mW."
+  },
+  "reported": {
+    "Q_C_mW": 102.3
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Liu 2017 He-4 open-cycle JT, last stage at 17.3 K",
+  "fluid": "Helium",
+  "T_C": 4.2517,
+  "P_U": 1.137,
+  "T_H": 300.0,
+  "T_pre": [
+    60.0,
+    17.3
+  ],
+  "eta": [
+    1.0,
+    1.0,
+    0.9857
+  ],
+  "mdot_mg_s": 9.1,
+  "reference": {
+    "citation": "Liu D, Gan Z, de Waele ATAM, Tao X, Yao Y. Temperature and mass-flow behavior of a He-4 Joule-Thomson cryocooler. Int J Heat Mass Transf 109 (2017) 1094-1099",
+    "doi": "10.1016/j.ijheatmasstransfer.2017.02.070",
+    "kind": "Validation against a measured cooler",
+    "location": "Sec. 2.2 / Eq. (1): Ta = 17.3 K, 1.137 / 0.104 MPa, mdot 9.1 mg/s, Qmax = 52.5 mW (theory), 48.9-49.4 mW measured",
+    "note": "T_C is T_sat(0.104 MPa) = 4.2517 K. Last-CHEX effectiveness 0.9857 is DERIVED from the paper's Eq. (1), which has the return gas leaving CFHX3 at 17.1 K while the supply enters at 17.3 K (eta = (h(P_L,17.1 K) - h_g)/(h(P_L,17.3 K) - h_g)). T_pre1 = 60 K and eta1 = eta2 = 1 are PLACEHOLDERS (not given); they do not affect q_C, mdot or Q_C. Reported Q_C is their calculated Q_max (52.5 mW); measured Q_max is 48.9-49.4 mW (the ~3.6 mW difference is heat leak)."
+  },
+  "reported": {
+    "Q_C_mW": 52.5,
+    "P_D_kPa": 104.0
+  }
+}

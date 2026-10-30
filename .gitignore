@@ -1,7 +1,4 @@
-# generated output (safe to delete, recreated on use)
-results/
-
-# Python
+# Python caches
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -14,11 +11,16 @@ __pycache__/
 venv/
 env/
 
-# LaTeX build files (keep the .tex and .pdf)
+# LaTeX build files (the .tex and .pdf are kept)
 *.aux
 *.log
 *.out
 *.toc
+*.nav
+*.snm
+*.vrb
+*.fls
+*.fdb_latexmk
 *.synctex.gz
 
 # editors and OS

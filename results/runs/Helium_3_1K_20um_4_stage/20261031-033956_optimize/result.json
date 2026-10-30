@@ -1,0 +1,1223 @@
+{
+  "kind": "optimize",
+  "config": {
+    "name": "Helium_3_1K_20um_4_stage",
+    "fluid": "he3",
+    "T_C": 1.0,
+    "P_U": null,
+    "T_H": 300.0,
+    "T_pre": [
+      null,
+      null,
+      8.0
+    ],
+    "eta": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "d_um": 20.0,
+    "source": "design example",
+    "reference": {
+      "citation": "design example",
+      "kind": "Own design"
+    }
+  },
+  "config_id": "Helium_3_1K_20um_4_stage",
+  "ranges": {
+    "pu_min": 0.2,
+    "pu_max": 1.2,
+    "tpre_min": 1.2,
+    "tpre_max": 30.0
+  },
+  "flow_model": "hem",
+  "drive": "Q_C",
+  "d_um": 20.0,
+  "notes": [],
+  "P_U_max_MPa": 1.1308716662443938,
+  "optima": {
+    "max_q_C": {
+      "P_U_MPa": 0.35836515140752806,
+      "T_pre_last_K": 8.0,
+      "q_C_kJ_kg": 7.9786509839749815,
+      "T_8_K": 1.000000039791497,
+      "binding": "warm_end",
+      "mdot_mg_s": 2.3340728319261634,
+      "Q_C_mW": 18.62275249711696
+    },
+    "max_Q_C": {
+      "P_U_MPa": 0.3583651577517428,
+      "T_pre_last_K": 8.0,
+      "q_C_kJ_kg": 7.978650966206213,
+      "T_8_K": 0.9999999999999638,
+      "binding": "cold_end",
+      "mdot_mg_s": 2.334072852770338,
+      "Q_C_mW": 18.622752621951747
+    }
+  },
+  "P_U_MPa": 0.3583651577517428,
+  "T_pre_last_K": 8.0,
+  "T_pre_opt_at_P_U_K": 8.000000116202568,
+  "upstream": {
+    "free": [
+      1,
+      2
+    ],
+    "objective": 32.90438992450081,
+    "feasible": true,
+    "criterion": "minimise sum_j Q_pre,j (T_H/T_j - 1)"
+  },
+  "final_config": {
+    "name": "Helium_3_1K_20um_4_stage",
+    "fluid": "he3",
+    "T_C": 1.0,
+    "P_U": 0.3583651577517428,
+    "T_H": 300.0,
+    "T_pre": [
+      25.642703606547457,
+      12.293660087776487,
+      8.0
+    ],
+    "eta": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ],
+    "d_um": 20.0,
+    "source": "design example",
+    "reference": {
+      "citation": "design example",
+      "kind": "Own design"
+    }
+  },
+  "solve": {
+    "kind": "solve",
+    "config": {
+      "name": "Helium_3_1K_20um_4_stage",
+      "fluid": "he3",
+      "T_C": 1.0,
+      "P_U": 0.3583651577517428,
+      "T_H": 300.0,
+      "T_pre": [
+        25.642703606547457,
+        12.293660087776487,
+        8.0
+      ],
+      "eta": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "d_um": 20.0,
+      "source": "design example",
+      "reference": {
+        "citation": "design example",
+        "kind": "Own design"
+      }
+    },
+    "config_id": "Helium_3_1K_20um_4_stage",
+    "check": {
+      "verdict": "warnings",
+      "errors": [],
+      "warnings": [
+        "INTERNAL_TEMPERATURE_CROSSOVER: CHEX 1 (min gap -0.01012 K at 30% of duty)",
+        "orifice flow is not choked (HEM maximum at the back pressure); typical for liquid-like inlets, mass flux is still the HEM maximum"
+      ],
+      "info": {
+        "limits": {
+          "T_min": 0.5,
+          "T_max": 3.2,
+          "T_crit": 3.3246
+        },
+        "P_D_kPa": 1.160278010952895,
+        "q_L_kJ_kg": 7.978650966206209,
+        "P_U_max_MPa": 1.1308716662443938,
+        "delta_h_T_kJ_kg": 7.978651128262347,
+        "T_pre_opt_K": 8.000000116202568,
+        "q_C_kJ_kg": 7.978650966206213
+      }
+    },
+    "metrics": {
+      "q_C_kJ_kg": 7.978650966206213,
+      "P_D_kPa": 1.160278010952895,
+      "T_JT_inlet_K": 0.9999999999999638,
+      "mdot_mg_s": 2.334072852770338,
+      "Q_C_mW": 18.622752621951747,
+      "G_kg_m2_s": 7429.58464110002,
+      "chex_limiting_end": [
+        "warm_end",
+        "warm_end",
+        "warm_end",
+        "cold_end"
+      ],
+      "flags": [
+        "INTERNAL_TEMPERATURE_CROSSOVER: CHEX 1 (min gap -0.01012 K at 30% of duty)",
+        "UNCHOKED_RESTRICTION_FLOW"
+      ]
+    },
+    "states": [
+      {
+        "state": 1,
+        "role": "CHEX1 hot in",
+        "T_K": 300.0,
+        "P_kPa": 358.3651577517428,
+        "h_kJ_kg": 2077.2310508937826,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 2,
+        "role": "CHEX1 hot out",
+        "T_K": 26.24482746803082,
+        "P_kPa": 358.3651577517428,
+        "h_kJ_kg": 186.86276902869437,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 3,
+        "role": "CHEX2 hot in",
+        "T_K": 25.642703606547457,
+        "P_kPa": 358.3651577517428,
+        "h_kJ_kg": 182.62314181010646,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 4,
+        "role": "CHEX2 hot out",
+        "T_K": 12.774024566135452,
+        "P_kPa": 358.3651577517428,
+        "h_kJ_kg": 90.61562527864642,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 5,
+        "role": "CHEX3 hot in",
+        "T_K": 12.293660087776487,
+        "P_kPa": 358.3651577517428,
+        "h_kJ_kg": 87.0520940365955,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 6,
+        "role": "CHEX3 hot out",
+        "T_K": 8.4456776329952,
+        "P_kPa": 358.3651577517428,
+        "h_kJ_kg": 57.439282999385554,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 7,
+        "role": "CHEX4 hot in",
+        "T_K": 8.0,
+        "P_kPa": 358.3651577517428,
+        "h_kJ_kg": 53.77420931652269,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 8,
+        "role": "CHEX4 hot out",
+        "T_K": 0.9999999999999638,
+        "P_kPa": 358.3651577517428,
+        "h_kJ_kg": 5.131676433428023,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 9,
+        "role": "JT valve outlet",
+        "T_K": 1.0,
+        "P_kPa": 1.160278010952895,
+        "h_kJ_kg": 5.131676433428023,
+        "phase": "two_phase",
+        "x_vapour": 0.3381094178221948
+      },
+      {
+        "state": 10,
+        "role": "CHEX4 cold in; evaporator outlet",
+        "T_K": 1.0,
+        "P_kPa": 1.160278010952895,
+        "h_kJ_kg": 13.110327399634237,
+        "phase": "saturated_vapour",
+        "x_vapour": 1.0
+      },
+      {
+        "state": 11,
+        "role": "CHEX3 cold in; CHEX4 cold out",
+        "T_K": 7.9999999765116865,
+        "P_kPa": 1.160278010952895,
+        "h_kJ_kg": 61.752860282728896,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 12,
+        "role": "CHEX2 cold in; CHEX3 cold out",
+        "T_K": 12.29366008777649,
+        "P_kPa": 1.160278010952895,
+        "h_kJ_kg": 91.36567131993884,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 13,
+        "role": "CHEX1 cold in; CHEX2 cold out",
+        "T_K": 25.64270360654746,
+        "P_kPa": 1.160278010952895,
+        "h_kJ_kg": 183.37318785139888,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      },
+      {
+        "state": 14,
+        "role": "CHEX1 cold out",
+        "T_K": 300.0,
+        "P_kPa": 1.160278010952895,
+        "h_kJ_kg": 2073.7414697164872,
+        "phase": "single_phase_or_unknown",
+        "x_vapour": null
+      }
+    ],
+    "loads": [
+      {
+        "phex": 1,
+        "T_in_K": 26.24482746803082,
+        "T_out_K": 25.642703606547457,
+        "q_kJ_kg": 4.2396272185879065,
+        "Q_mW": 9.895598796772248
+      },
+      {
+        "phex": 2,
+        "T_in_K": 12.774024566135452,
+        "T_out_K": 12.293660087776487,
+        "q_kJ_kg": 3.5635312420509146,
+        "Q_mW": 8.317541532070004
+      },
+      {
+        "phex": 3,
+        "T_in_K": 8.4456776329952,
+        "T_out_K": 8.0,
+        "q_kJ_kg": 3.665073682862865,
+        "Q_mW": 8.554548986573216
+      }
+    ],
+    "headline": "q_C = 7.979 kJ/kg, Q_C = 18.62 mW"
+  },
+  "upstream_map": [
+    {
+      "phex": 1,
+      "T_pre_K": 12.343660087776488,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501641,
+      "carnot_cost": 315.62245585310257,
+      "q1_kJ_kg": 7.77624178396177,
+      "q2_kJ_kg": 0.026916676677006764,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 19.533818585582075,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501714,
+      "carnot_cost": 268.15373462586825,
+      "q1_kJ_kg": 5.333137366341165,
+      "q2_kJ_kg": 2.470021094297685,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 26.723977083387666,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501627,
+      "carnot_cost": 262.6353875456435,
+      "q1_kJ_kg": 4.079528187625431,
+      "q2_kJ_kg": 3.723630273013332,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 33.91413558119325,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501599,
+      "carnot_cost": 267.35677240484654,
+      "q1_kJ_kg": 3.1519247947176625,
+      "q2_kJ_kg": 4.651233665921071,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 41.10429407899884,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 275.26261490302926,
+      "q1_kJ_kg": 2.404568952425965,
+      "q2_kJ_kg": 5.398589508212855,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 48.29445257680443,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501568,
+      "carnot_cost": 283.91939144746607,
+      "q1_kJ_kg": 1.7850505639628973,
+      "q2_kJ_kg": 6.018107896675807,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 55.484611074610015,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 292.31868891237946,
+      "q1_kJ_kg": 1.2672422781572095,
+      "q2_kJ_kg": 6.535916182481611,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 62.6747695724156,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501568,
+      "carnot_cost": 299.74245015232106,
+      "q1_kJ_kg": 0.8487200670731254,
+      "q2_kJ_kg": 6.954438393565579,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 69.8649280702212,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501568,
+      "carnot_cost": 305.72611366096834,
+      "q1_kJ_kg": 0.5303644801802002,
+      "q2_kJ_kg": 7.272793980458504,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 77.05508656802678,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 310.39664548946706,
+      "q1_kJ_kg": 0.2922778287628898,
+      "q2_kJ_kg": 7.510880631875756,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 84.24524506583236,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 314.0296613854195,
+      "q1_kJ_kg": 0.11330395479570143,
+      "q2_kJ_kg": 7.689854505842945,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 91.43540356363795,
+      "feasible": true,
+      "total_q_kJ_kg": 11.477948746530565,
+      "carnot_cost": 316.6185145782656,
+      "q1_kJ_kg": 2.3283064365386963e-13,
+      "q2_kJ_kg": 7.812875063667467,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 2
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 98.62556206144355,
+      "feasible": true,
+      "total_q_kJ_kg": 11.545954017536708,
+      "carnot_cost": 318.2100298370452,
+      "q1_kJ_kg": 1.1641532182693482e-13,
+      "q2_kJ_kg": 7.8808803346737255,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 2
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 105.81572055924913,
+      "feasible": true,
+      "total_q_kJ_kg": 11.554625192144297,
+      "carnot_cost": 318.41295979372825,
+      "q1_kJ_kg": 1.1641532182693482e-13,
+      "q2_kJ_kg": 7.889551509281315,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 2
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 113.00587905705471,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501744,
+      "carnot_cost": 316.35794819284416,
+      "q1_kJ_kg": 0.0015252120477380231,
+      "q2_kJ_kg": 7.80163324859114,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 120.19603755486031,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501744,
+      "carnot_cost": 313.2712873615192,
+      "q1_kJ_kg": 0.1424131825621007,
+      "q2_kJ_kg": 7.660745278076778,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 127.3861960526659,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501627,
+      "carnot_cost": 310.38202619021877,
+      "q1_kJ_kg": 0.2725486542744329,
+      "q2_kJ_kg": 7.530609806364329,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 134.57635455047148,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501627,
+      "carnot_cost": 308.9416726770748,
+      "q1_kJ_kg": 0.3359600838010665,
+      "q2_kJ_kg": 7.467198376837696,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 141.7665130482771,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501627,
+      "carnot_cost": 308.4465721147473,
+      "q1_kJ_kg": 0.3564708312297007,
+      "q2_kJ_kg": 7.446687629409062,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 148.95667154608267,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501627,
+      "carnot_cost": 308.5215418846675,
+      "q1_kJ_kg": 0.3514959255211288,
+      "q2_kJ_kg": 7.4516625351176335,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 156.14683004388826,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501627,
+      "carnot_cost": 309.00985337964704,
+      "q1_kJ_kg": 0.32832540978328323,
+      "q2_kJ_kg": 7.474833050855479,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 163.33698854169384,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501627,
+      "carnot_cost": 309.7510505185396,
+      "q1_kJ_kg": 0.29424932712339796,
+      "q2_kJ_kg": 7.508909133515364,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 170.52714703949943,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 310.5817355779684,
+      "q1_kJ_kg": 0.2565577206481248,
+      "q2_kJ_kg": 7.546600739990521,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 177.71730553730504,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 311.3361642630256,
+      "q1_kJ_kg": 0.22254063346609473,
+      "q2_kJ_kg": 7.580617827172551,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 184.90746403511062,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 311.8468968487192,
+      "q1_kJ_kg": 0.19947955276351423,
+      "q2_kJ_kg": 7.603678907875132,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 192.0976225329162,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 312.1992503352076,
+      "q1_kJ_kg": 0.18352291913400404,
+      "q2_kJ_kg": 7.619635541504642,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 199.2877810307218,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 312.5613844453711,
+      "q1_kJ_kg": 0.16725584292737766,
+      "q2_kJ_kg": 7.6359026177112685,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 206.47793952852737,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 312.92657392335275,
+      "q1_kJ_kg": 0.15096132811275312,
+      "q2_kJ_kg": 7.652197132525893,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 213.66809802633296,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 313.2880691714346,
+      "q1_kJ_kg": 0.13492237866250797,
+      "q2_kJ_kg": 7.668236081976138,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 220.85825652413857,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 313.6391002124811,
+      "q1_kJ_kg": 0.11942199854599311,
+      "q2_kJ_kg": 7.683736462092653,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 228.04841502194415,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 313.97287990254455,
+      "q1_kJ_kg": 0.10474319173512049,
+      "q2_kJ_kg": 7.698415268903525,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 235.23857351974974,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 314.2826065545193,
+      "q1_kJ_kg": 0.09116896219947375,
+      "q2_kJ_kg": 7.711989498439173,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 242.42873201755532,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 314.57155837320283,
+      "q1_kJ_kg": 0.07854665113589726,
+      "q2_kJ_kg": 7.724611809502749,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 249.6188905153609,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 314.84798290690054,
+      "q1_kJ_kg": 0.06651163338241167,
+      "q2_kJ_kg": 7.7366468272562345,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 256.8090490131665,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 315.1113611068957,
+      "q1_kJ_kg": 0.055079725646879525,
+      "q2_kJ_kg": 7.748078734991767,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 263.99920751097204,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 315.36118419001417,
+      "q1_kJ_kg": 0.044266926533542576,
+      "q2_kJ_kg": 7.7588915341051035,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 271.18936600877765,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 315.59695592687274,
+      "q1_kJ_kg": 0.03408923464687541,
+      "q2_kJ_kg": 7.76906922599177,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 278.3795245065832,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 315.8181910206051,
+      "q1_kJ_kg": 0.02456264859321527,
+      "q2_kJ_kg": 7.778595812045431,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 285.5696830043888,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 316.0244137306488,
+      "q1_kJ_kg": 0.01570316697633825,
+      "q2_kJ_kg": 7.787455293662307,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 292.75984150219443,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 316.215156699155,
+      "q1_kJ_kg": 0.007526788401184603,
+      "q2_kJ_kg": 7.7956316722374615,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 1,
+      "T_pre_K": 299.95,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501512,
+      "carnot_cost": 316.3899599462946,
+      "q1_kJ_kg": 4.9511472694575784e-05,
+      "q2_kJ_kg": 7.803108949165951,
+      "q3_kJ_kg": 3.665073682862865,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 8.05,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501693,
+      "carnot_cost": 307.53729024115705,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 7.159368929531767,
+      "q3_kJ_kg": 0.0692359953820196,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 8.488567590163687,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501679,
+      "carnot_cost": 294.99109088924666,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 6.585477814100079,
+      "q3_kJ_kg": 0.6431271108136934,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 8.927135180327374,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 285.49130079477214,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 6.088835666472769,
+      "q3_kJ_kg": 1.1397692584410106,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 9.36570277049106,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 278.27314519749353,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 5.656616044285853,
+      "q3_kJ_kg": 1.5719888806279267,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 9.804270360654746,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 272.8536297426933,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 5.267461037334782,
+      "q3_kJ_kg": 1.9611438875789973,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 10.242837950818434,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 268.94781755222203,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 4.9026720462787345,
+      "q3_kJ_kg": 2.325932878635045,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 10.68140554098212,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 266.20116323274283,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 4.568149143479663,
+      "q3_kJ_kg": 2.6604557814341168,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 11.119973131145805,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 264.34641863463895,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 4.263493957253435,
+      "q3_kJ_kg": 2.9651109676603444,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 11.558540721309491,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 263.2021022322087,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 3.9845889541607176,
+      "q3_kJ_kg": 3.244015970753062,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 11.997108311473179,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 262.6358476826695,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 3.727316600762264,
+      "q3_kJ_kg": 3.5012883241515156,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 12.435675901636865,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 262.55574312786445,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 3.4875593636188276,
+      "q3_kJ_kg": 3.7410455612949516,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 12.874243491800552,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 262.9023571938543,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 3.2612760238684424,
+      "q3_kJ_kg": 3.967328901045337,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 13.312811081964238,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 263.5621379407254,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 3.04989946512373,
+      "q3_kJ_kg": 4.1787054597900495,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 13.751378672127924,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 264.4341277396121,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 2.854546121493797,
+      "q3_kJ_kg": 4.374058803419983,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 14.18994626229161,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 265.4687552233323,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 2.673637708644135,
+      "q3_kJ_kg": 4.554967216269644,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 14.628513852455296,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 266.6294913088127,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 2.505595942240252,
+      "q3_kJ_kg": 4.7230089826735275,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 15.067081442618983,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 267.8909510447726,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 2.3488425379476103,
+      "q3_kJ_kg": 4.87976238696617,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 15.50564903278267,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 269.2373175877163,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 2.2017992114316587,
+      "q3_kJ_kg": 5.026805713482121,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 15.944216622946357,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 270.6610262821607,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 2.0628876783579617,
+      "q3_kJ_kg": 5.165717246555817,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 16.382784213110043,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 272.1616601041252,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.9305296543918813,
+      "q3_kJ_kg": 5.298075270521898,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 16.82135180327373,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 273.7450178931065,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.8031468551990255,
+      "q3_kJ_kg": 5.425458069714754,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 17.259919393437414,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 275.42232463916685,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.6791609964448144,
+      "q3_kJ_kg": 5.549443928468965,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 17.6984869836011,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 277.20955918428103,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.5569937937947251,
+      "q3_kJ_kg": 5.671611131119055,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 18.137054573764786,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 279.11655804318957,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.4355594140961183,
+      "q3_kJ_kg": 5.793045510817661,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 18.575622163928475,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 281.01602525593705,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.3203317563151942,
+      "q3_kJ_kg": 5.908273168598585,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 19.01418975409216,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 282.8643129155802,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.2126027452841226,
+      "q3_kJ_kg": 6.016002179629657,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 19.452757344255847,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 284.6644625555389,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.111529955009406,
+      "q3_kJ_kg": 6.117074969904373,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 19.891324934419533,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 286.422033562565,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 1.0162709594975168,
+      "q3_kJ_kg": 6.212333965416263,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 20.329892524583222,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 288.14483159418046,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.9259833327548113,
+      "q3_kJ_kg": 6.302621592158968,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 20.768460114746908,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 289.8426714061615,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.8398246487878205,
+      "q3_kJ_kg": 6.388780276125959,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 21.207027704910594,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 291.5271691088235,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.7569524816029006,
+      "q3_kJ_kg": 6.471652443310879,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 21.64559529507428,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 293.2115596782186,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.6765244052065537,
+      "q3_kJ_kg": 6.552080519707226,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 22.084162885237966,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 294.9105362115262,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.5976979936052521,
+      "q3_kJ_kg": 6.630906931308528,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 22.52273047540165,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 296.64010796276983,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.5196308208053524,
+      "q3_kJ_kg": 6.708974104108427,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 22.961298065565337,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 298.4173487110083,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.4414856148654944,
+      "q3_kJ_kg": 6.787119310048285,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 23.399865655729023,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 300.2147479376154,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.3642751539268647,
+      "q3_kJ_kg": 6.864329770986915,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 23.83843324589271,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 302.0002862316526,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.2891622647524928,
+      "q3_kJ_kg": 6.939442660161287,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 24.2770008360564,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 303.7729384710911,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.2160437351478613,
+      "q3_kJ_kg": 7.012561189765918,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 24.715568426220084,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 305.5320270140539,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.1448163529188314,
+      "q3_kJ_kg": 7.0837885719949485,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 25.15413601638377,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 307.27719140688987,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.07537690587091493,
+      "q3_kJ_kg": 7.1532280190428645,
+      "cold_limited_chex": 1
+    },
+    {
+      "phex": 2,
+      "T_pre_K": 25.592703606547456,
+      "feasible": true,
+      "total_q_kJ_kg": 11.468232143501686,
+      "carnot_cost": 309.0083612067873,
+      "q1_kJ_kg": 4.2396272185879065,
+      "q2_kJ_kg": 0.007622181809943868,
+      "q3_kJ_kg": 7.220982743103836,
+      "cold_limited_chex": 1
+    }
+  ],
+  "headline": "P_U = 0.3584 MPa, T_pre,last = 8 K, Q_C = 18.62 mW",
+  "reference": {
+    "citation": "design example",
+    "kind": "Own design"
+  }
+}
