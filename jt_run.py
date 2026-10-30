@@ -2,7 +2,13 @@
 
     python jt_run.py check                      He-3 property tables: present and sane?
     python jt_run.py validate                   Workflow 1: reproduce the paper and score it
-    python jt_run.py solve cases/xyz.json ...   Workflows 2 and 3: solve cycles from case files
+    python jt_run.py new --fluid he3 --T_C 1 --T_pre 80,25,- --eta 1,1,1,1 --d_um 20
+                                                create + name + save a case file (cases/<id>.json)
+    python jt_run.py feasible cases/xyz.json    is this design physically possible? (and why not)
+    python jt_run.py run cases/xyz.json         solve (all inputs given) or optimise (blanks '-'),
+                                                state points, PHEX loads, plots, saved under results/runs/
+    python jt_run.py runs                       list saved runs and the config each belongs to
+    python jt_run.py solve cases/xyz.json ...   plain solve with sweep / reported-value comparison
     python jt_run.py optimize <args>            last-stage optimizer (python -m jt.design_optimize)
     python jt_run.py phex <args>                PHEX load map       (python -m jt.phex_load_map)
     python jt_run.py help
@@ -338,7 +344,7 @@ def cmd_validate(rest: List[str]) -> int:
 # solve : workflows 2 and 3
 
 CASE_KEYS = {"name", "fluid", "singlephase_csv", "saturation_csv", "T_C", "P_U", "T_H", "T_pre", "eta",
-             "d_um", "sweep", "reported", "source", "notes"}
+             "d_um", "mdot_mg_s", "sweep", "reported", "source", "notes", "optimize", "reference"}
 SWEEP_KEYS = {"T_C", "P_U", "T_H", "d_um", "eta_last", "T_pre_last"}
 
 
@@ -356,11 +362,17 @@ def load_case(path: Path) -> Dict[str, Any]:
     case.setdefault("name", path.stem)
     case.setdefault("T_H", 300.0)
     case.setdefault("d_um", None)
+    case.setdefault("mdot_mg_s", None)
+    if case["mdot_mg_s"] is not None and case["d_um"] is not None:
+        raise ValueError("give either d_um or mdot_mg_s (measured flow), not both")
     if not isinstance(case["eta"], list) or not case["eta"]:
         raise ValueError("'eta' must be a non-empty list, one effectiveness per CHEX (warm to cold)")
     if not isinstance(case["T_pre"], list) or len(case["T_pre"]) != len(case["eta"]) - 1:
         raise ValueError(f"'T_pre' must list {len(case['eta']) - 1} temperatures (one per PHEX) "
                          f"for {len(case['eta'])} CHEXs; got {case['T_pre']!r}")
+    if any(t is None for t in case["T_pre"]) or case["P_U"] is None:
+        raise ValueError("this case has blank P_U / T_pre entries (to be optimised): use "
+                         "`python jt_run.py run <case> --optimize` first, then fill them in")
     for k in ("T_C", "P_U", "T_H"):
         if not isinstance(case[k], (int, float)) or case[k] <= 0:
             raise ValueError(f"'{k}' must be a positive number")
@@ -403,8 +415,9 @@ def make_case_fluid(case: Mapping[str, Any]):
 def solve_point(fluid, p: Mapping[str, Any], pinch: bool = True):
     from jt.cycle_core import solve_cycle
     d = None if p.get("d_um") is None else float(p["d_um"]) * 1e-6
+    md = None if p.get("mdot_mg_s") is None else float(p["mdot_mg_s"]) * 1e-6
     return solve_cycle(fluid, Tc=float(p["T_C"]), Pu=float(p["P_U"]) * 1e6, Th=float(p["T_H"]),
-                       Tpre=[float(t) for t in p["T_pre"]], eta=[float(e) for e in p["eta"]], d=d,
+                       Tpre=[float(t) for t in p["T_pre"]], eta=[float(e) for e in p["eta"]], d=d, mdot_given=md,
                        pinch_points=20 if pinch else 0)
 
 
@@ -479,7 +492,7 @@ def _provenance(case: Mapping[str, Any]) -> Dict[str, Any]:
 def run_case(path: Path, outroot: Path, pinch: bool) -> bool:
     case = load_case(path)
     fluid = make_case_fluid(case)
-    base = {k: case[k] for k in ("T_C", "P_U", "T_H", "T_pre", "eta", "d_um")}
+    base = {k: case[k] for k in ("T_C", "P_U", "T_H", "T_pre", "eta", "d_um", "mdot_mg_s")}
     out = outroot / _slug(case["name"])
     out.mkdir(parents=True, exist_ok=True)
     (out / "case.json").write_text(path.read_text(encoding="utf-8-sig"), encoding="utf-8")
@@ -505,7 +518,7 @@ def run_case(path: Path, outroot: Path, pinch: bool) -> bool:
             print(f"           mdot={_num(met['mdot_mg_s'])} mg/s   Q_C={_num(met['Q_C_mW'])} mW   "
                   f"PHEX loads (warm->cold) [mW]: {[round(met.get(f'Q_pre{i}_mW', float('nan')), 3) for i in range(1, n)]}")
         else:
-            print("           (no orifice diameter given: specific duties only; set d_um for mdot and Q_C)")
+            print("           (no orifice diameter or mass flow given: specific duties only; set d_um or mdot_mg_s)")
         print(f"           limiting end of each CHEX (warm->cold): {met['chex_limiting_end']}")
         print(f"  flags  : {'; '.join(res.flags) if res.flags else 'none'}")
         if case.get("reported"):
@@ -577,6 +590,170 @@ def cmd_solve(rest: List[str]) -> int:
 
 
 # ---------------------------------------------------------------------------
+# new / feasible / run / runs : design workflow (jt/workflow.py)
+
+def _blank_list(text: str, what: str) -> List[Optional[float]]:
+    """'80,25,-' -> [80.0, 25.0, None]   ('-' or empty = to be optimised)."""
+    if text is None or str(text).strip() == "":
+        return []
+    out: List[Optional[float]] = []
+    for part in str(text).split(","):
+        part = part.strip()
+        out.append(None if part in ("", "-", "none", "None") else float(part))
+    return out
+
+
+def _cfg_from_case_file(path: Path) -> Dict[str, Any]:
+    from jt import workflow as wf
+    raw = json.loads(path.read_text(encoding="utf-8-sig"))
+    raw = {k: v for k, v in raw.items() if not k.startswith("_")}
+    return wf.norm_cfg(raw)
+
+
+def _print_check(chk: Mapping[str, Any]) -> None:
+    print(f"  verdict: {chk['verdict'].upper()}")
+    for e in chk.get("errors", []):
+        print(f"    ERROR    {e}")
+    for w in chk.get("warnings", []):
+        print(f"    WARNING  {w}")
+    info = chk.get("info") or {}
+    for k in ("P_D_kPa", "q_L_kJ_kg", "P_U_max_MPa", "T_pre_opt_K", "dh_T_kJ_kg"):
+        if k in info and info[k] is not None:
+            print(f"    {k:<12} {_num(info[k])}")
+
+
+def cmd_new(rest: List[str]) -> int:
+    from jt import workflow as wf
+    ap = argparse.ArgumentParser(prog="jt_run.py new", description="Create and save a case file named by the "
+                                 "standard scheme {Fluid}_{T_C}K_{d}um_{N}_stage[_eta..].")
+    ap.add_argument("--fluid", required=True, help="he3, Helium, Neon, Hydrogen, ParaHydrogen, Nitrogen, Argon, Oxygen, Methane, ...")
+    ap.add_argument("--T_C", type=float, required=True, help="cold-end temperature [K]")
+    ap.add_argument("--eta", required=True, help="CHEX effectiveness, warm to cold, comma separated (N values = N CHEXs)")
+    ap.add_argument("--T_pre", default="", help="PHEX outlet temperatures [K] (N-1 values); '-' = optimise, e.g. 80,25,-")
+    ap.add_argument("--P_U", default="-", help="upstream pressure [MPa]; '-' = optimise")
+    ap.add_argument("--T_H", type=float, default=300.0)
+    ap.add_argument("--d_um", type=float, default=None, help="orifice diameter [um] (flow from the HEM model)")
+    ap.add_argument("--mdot_mg_s", type=float, default=None, help="measured mass flow [mg/s] instead of d_um")
+    ap.add_argument("--name", default="")
+    ap.add_argument("--citation", default="", help="data reference: where these inputs come from")
+    ap.add_argument("--doi", default="")
+    ap.add_argument("--where", default="", help="location in the source (table, figure, page)")
+    ap.add_argument("--kind", default="", help="e.g. 'Reproduction of a paper', 'Own design', 'Measurement'")
+    ap.add_argument("--note", default="")
+    a = ap.parse_args(rest)
+    P_U = _blank_list(a.P_U, "P_U")
+    raw: Dict[str, Any] = dict(name=a.name, fluid=a.fluid, T_C=a.T_C, T_H=a.T_H, eta=[float(x) for x in a.eta.split(",")],
+                               T_pre=_blank_list(a.T_pre, "T_pre"), P_U=P_U[0] if P_U else None, d_um=a.d_um,
+                               mdot_mg_s=a.mdot_mg_s)
+    ref = {k: v for k, v in dict(citation=a.citation, doi=a.doi, location=a.where, kind=a.kind, note=a.note).items() if v}
+    if ref:
+        raw["reference"] = ref
+    cfg = wf.norm_cfg(raw)
+    saved = wf.save_config(cfg)
+    print(f"saved cases/{saved['file']}")
+    print("\nfeasibility:")
+    _print_check(wf.check_config(cfg))
+    return 0
+
+
+def cmd_feasible(rest: List[str]) -> int:
+    from jt import workflow as wf
+    ap = argparse.ArgumentParser(prog="jt_run.py feasible", description="Is the design physically possible, and why not?")
+    ap.add_argument("case")
+    a = ap.parse_args(rest)
+    cfg = _cfg_from_case_file(Path(a.case))
+    print(f"{wf.config_id(cfg)}")
+    chk = wf.check_config(cfg)
+    _print_check(chk)
+    return 1 if chk["verdict"] == "infeasible" else 0
+
+
+def _print_run(res: Mapping[str, Any]) -> None:
+    print(f"\n{res.get('headline', '')}")
+    chk = res.get("check")
+    if chk:
+        _print_check(chk)
+    m = res.get("metrics")
+    if m:
+        print(f"  q_C = {_num(m['q_C_kJ_kg'])} kJ/kg   T before JT valve = {_num(m['T_JT_inlet_K'])} K   P_D = {_num(m['P_D_kPa'])} kPa")
+        if m.get("mdot_mg_s") is not None:
+            print(f"  mdot = {_num(m['mdot_mg_s'])} mg/s   Q_C = {_num(m['Q_C_mW'])} mW")
+        print(f"  limiting end of each CHEX: {','.join(m['chex_limiting_end'])}")
+        print(f"  flags: {'; '.join(m['flags']) if m['flags'] else 'none'}")
+    if res.get("states"):
+        print("  state points:")
+        print(f"    {'state':<6}{'T [K]':>10}{'P [kPa]':>12}{'h [kJ/kg]':>12}  {'phase':<10} role")
+        for r in res["states"]:
+            print(f"    {str(r['state']):<6}{_num(r['T_K'], 5):>10}{_num(r['P_kPa'], 6):>12}{_num(r['h_kJ_kg'], 6):>12}  "
+                  f"{str(r.get('phase', '')):<10} {r.get('role', '')}")
+    if res.get("loads"):
+        print("  PHEX loads (h_in - h_out at the set temperatures):")
+        for r in res["loads"]:
+            print(f"    PHEX {r['phex']}: {_num(r['T_in_K'])} -> {_num(r['T_out_K'])} K   q = {_num(r['q_kJ_kg'])} kJ/kg"
+                  + ("" if r.get("Q_mW") is None else f"   Q = {_num(r['Q_mW'])} mW"))
+
+
+def cmd_run(rest: List[str]) -> int:
+    from jt import workflow as wf
+    ap = argparse.ArgumentParser(prog="jt_run.py run", description="Solve (all inputs given) or optimise (blank P_U / T_pre, "
+                                 "or --optimize). Everything is saved to results/runs/<config id>/<stamp>_<kind>/.")
+    ap.add_argument("case")
+    ap.add_argument("--optimize", action="store_true", help="force the optimiser even if all inputs are given")
+    ap.add_argument("--drive", choices=["Q_C", "Q_C_practical", "q_C"], default=None, help="which optimum drives the upstream choice")
+    ap.add_argument("--flow-model", choices=["hem", "paper_fit"], default=None)
+    ap.add_argument("--pu-min", type=float); ap.add_argument("--pu-max", type=float)
+    ap.add_argument("--tpre-min", type=float); ap.add_argument("--tpre-max", type=float)
+    ap.add_argument("--hem-grid", type=int)
+    ap.add_argument("--save-final", action="store_true", help="after optimising, save the filled-in configuration to cases/")
+    a = ap.parse_args(rest)
+    cfg = _cfg_from_case_file(Path(a.case))
+    blank = cfg["P_U"] is None or any(t is None for t in cfg["T_pre"])
+    kind = "optimize" if (a.optimize or blank) else "solve"
+    opts = {k: v for k, v in dict(drive=a.drive, flow_model=a.flow_model, pu_min=a.pu_min, pu_max=a.pu_max,
+                                  tpre_min=a.tpre_min, tpre_max=a.tpre_max, hem_grid=a.hem_grid).items() if v is not None}
+    if kind == "solve" and (cfg["P_U"] is None or None in cfg["T_pre"]):
+        print("blank inputs need the optimiser"); return 1
+    print(f"{wf.config_id(cfg)}   ({kind})")
+    run = wf.new_run(cfg, kind)
+    res = wf.run_solve(cfg, print, run) if kind == "solve" else wf.run_optimize(cfg, opts, print, run)
+    wf.finish_run(run, cfg, kind, res, res.get("headline", ""))
+    if kind == "optimize":
+        for n_ in res.get("notes", []):
+            print(f"  note: {n_}")
+        for k, o in (res.get("optima") or {}).items():
+            print(f"  {k}: " + "  ".join(f"{kk}={_num(vv)}" for kk, vv in o.items() if vv is not None and kk != "binding"))
+        if res.get("T_pre_opt_at_P_U_K") is not None:
+            print(f"  T_pre,opt at this P_U = {_num(res['T_pre_opt_at_P_U_K'])} K")
+        print(f"  {res.get('headline', '')}")
+        fc = res.get("final_config")
+        if fc:
+            print(f"  optimised inputs: P_U = {_num(fc['P_U'])} MPa   T_pre = {[round(t, 3) for t in fc['T_pre']]} K")
+            if a.save_final:
+                saved = wf.save_config(wf.norm_cfg(fc))
+                print(f"  saved filled-in configuration: cases/{saved['file']}")
+        if res.get("solve"):
+            _print_run(res["solve"])
+    else:
+        _print_run(res)
+    print(f"\nsaved: {run}")
+    return 1 if str(res.get("headline", "")).startswith("infeasible") else 0
+
+
+def cmd_runs(rest: List[str]) -> int:
+    from jt import workflow as wf
+    rows = wf.list_runs()
+    if not rows:
+        print("No saved runs yet (results/runs/).")
+        return 0
+    for r in rows:
+        ref = (r.get("reference") or {}).get("citation", "")
+        print(f"{r['time']}  {r['kind']:<8} {r['run']}\n    {r.get('headline', '')}"
+              f"\n    config: {', '.join(r['config_files']) if r['config_saved'] else 'NOT SAVED (use `new`)'}"
+              + (f"\n    ref: {ref}" if ref else ""))
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # passthroughs and dispatch
 
 def cmd_optimize(rest: List[str]) -> int:
@@ -589,7 +766,8 @@ def cmd_phex(rest: List[str]) -> int:
     return int(phex_load_map.main(rest) or 0)
 
 
-COMMANDS = {"check": cmd_check, "validate": cmd_validate, "solve": cmd_solve,
+COMMANDS = {"check": cmd_check, "validate": cmd_validate, "solve": cmd_solve, "new": cmd_new,
+            "feasible": cmd_feasible, "run": cmd_run, "runs": cmd_runs,
             "optimize": cmd_optimize, "phex": cmd_phex}
 
 

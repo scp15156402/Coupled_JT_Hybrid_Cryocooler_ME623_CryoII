@@ -590,6 +590,7 @@ def solve_cycle(
     Tpre: Sequence[float],
     eta: Sequence[float],
     d: Optional[float] = None,
+    mdot_given: Optional[float] = None,
     tol_T: float = 1e-6,
     tol_energy_rel: float = 1e-8,
     pinch_points: int = 20,
@@ -624,6 +625,12 @@ def solve_cycle(
 
     if d is not None and (not isfinite(d) or d <= 0):
         raise ValueError("Orifice diameter must be finite and positive")
+
+    if mdot_given is not None:
+        if d is not None:
+            raise ValueError("give either an orifice diameter d or a measured mass flow mdot_given, not both")
+        if not isfinite(mdot_given) or mdot_given <= 0:
+            raise ValueError("mdot_given must be finite and positive [kg/s]")
 
     if not (
         isfinite(tol_T) and tol_T >= 0
@@ -734,6 +741,9 @@ def solve_cycle(
             flags.append(
                 "CHOKING_CHECK: maximum mass flux does not closely satisfy u=a"
             )
+
+    if mdot_given is not None:
+        mdot = float(mdot_given)          # measured / prescribed flow: no restriction model, no throat data
 
     Q_C = mdot * q_C if mdot is not None else None
     Q_pre = [mdot * q for q in q_pre] if mdot is not None else None

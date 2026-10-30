@@ -6,10 +6,25 @@
   "T_C": 1.0,
   "P_U": 0.36,
   "T_H": 300.0,
-  "T_pre": [80.0, 25.0, 8.0],
-  "eta": [1.0, 1.0, 1.0, 0.97],
+  "T_pre": [
+    80.0,
+    25.0,
+    8.0
+  ],
+  "eta": [
+    1.0,
+    1.0,
+    1.0,
+    0.97
+  ],
   "d_um": 20.0,
   "reported": {
     "Q_C_mW": 14.7
+  },
+  "reference": {
+    "citation": "Zhang & Dang, Cryogenics 116 (2021) 103282",
+    "link": "10.1016/j.cryogenics.2021.103282",
+    "kind": "Reproduction of a paper",
+    "notes": "T_pre1 and T_pre2 are placeholders: the paper does not give them"
   }
 }

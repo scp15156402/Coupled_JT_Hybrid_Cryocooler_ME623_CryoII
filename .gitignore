@@ -1,6 +1,29 @@
-.venv/
-__pycache__/
-*.pyc
-desktop.ini
+# generated output (safe to delete, recreated on use)
 results/
-!results/_keep/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# virtual environments
+.venv/
+venv/
+env/
+
+# LaTeX build files (keep the .tex and .pdf)
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+# editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
